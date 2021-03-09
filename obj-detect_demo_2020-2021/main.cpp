@@ -9,7 +9,26 @@ int main_proccess(const std::string &module_file);
 int main(int argc, char* argv[])
 {
 	if (2 != argc) exit(-1);
-	return main_proccess(argv[1]);
+	try {
+		return main_proccess(argv[1]);
+	}
+	catch (const torch::Error &e) {
+		std::cerr << "\n******************************\n"
+					   "        An Error Occurs       \n"
+					   "******************************\n";
+		std::cerr << "Type: Torch Error\n";
+		std::cerr << "Brief:\n" << e.msg() << '\n';
+		std::cerr << "Context:\n" << e.context() << '\n';
+		std::cerr << "Backtrace:\n" << e.backtrace() << '\n';
+	}
+	catch (const std::exception &e) {
+		std::cerr << "\n******************************\n"
+					   "        An Error Occurs       \n"
+					   "******************************\n";
+		std::cerr << "Type: Others\n";
+		std::cerr << "Info:\n" << e.what() << '\n';
+	}
+    return -1;
 	//return main_proccess("C:\\Users\\JLWG\\Desktop\\module.pt");
 }
 
