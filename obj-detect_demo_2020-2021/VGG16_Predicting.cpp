@@ -1,10 +1,15 @@
 #include "VGG16_Predicting.h"
 
-void VGG16_Predicting::read_tensor_from_json(const Json::Value& root)
+void VGG16_Predicting::readAppendArray(std::vector<double>& des_, const Json::Value& root)
 {
 	unsigned int count = root["data"].size() - 1;
 	for (unsigned int i = 0; i < count; i++)
-		this->pTensor->push_back(root["data"][i].asDouble());
+		des_.push_back(root["data"][i].asDouble());
+}
+
+void VGG16_Predicting::read_tensor_from_json(const Json::Value& root)
+{
+	VGG16_Predicting::readAppendArray(*this->pTensor, root);
 }
 
 void VGG16_Predicting::create_tensor_msg(const std::vector<double> &prediction, std::string &doc)
@@ -93,6 +98,13 @@ std::vector<double> VGG16_Predicting::predict(void)
 	*pPrediction = ret;
 	return ret;
 }
+
+/**
+bool VGG16_Predicting::readTensor(std::string& msg)
+{
+	return false;
+}
+*/
 
 bool VGG16_Predicting::readStream(std::string &msg)
 {

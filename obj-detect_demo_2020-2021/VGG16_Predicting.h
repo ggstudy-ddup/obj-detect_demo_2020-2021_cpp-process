@@ -25,6 +25,7 @@ private:
 	std::vector<double> *pTensor;
 	std::vector<double> *pPrediction;
 
+	static void readAppendArray(std::vector<double> &des_, const Json::Value &root);
 	void read_tensor_from_json(const Json::Value &root);
 	void create_tensor_msg(const std::vector<double> &prediction,std::string &doc);
 
@@ -33,9 +34,11 @@ public:
 	VGG16_Predicting(const std::string &full_path);
 	~VGG16_Predicting();
 
+	// accessors
 	inline std::string getModuleFileName() { return fname; }
 	inline std::vector<double> getPrediction() { return *pPrediction; }
 
+	// mutators
 	void load(void);
 	void load(const std::string &full_path);
 
@@ -47,6 +50,7 @@ public:
 	 * @ret TRUE when a tensor is read from the stream
 	 * @ret FALSE when no tensor is read from the stream
 	 */
+	//bool readTensor(std::string &msg);
 	bool readStream(std::string &msg);
 
 	void sendPrediction(const std::vector<double> &);
