@@ -22,10 +22,12 @@ class VGG16_Predicting
 private:
 	torch::jit::script::Module *pModule;
 	std::string fname;
-	std::vector<double> *pTensor;
+	//std::vector<double> *pTensor;
+	double ***pTensorArray;
 	std::vector<double> *pPrediction;
 
-	static void readAppendArray(std::vector<double> &des_, const Json::Value &root);
+	//static void readAppendArray(std::vector<double> &des_, const Json::Value &root);
+	static void readAppendArray(double ***des_, const Json::Value &root);
 	void read_tensor_from_json(const Json::Value &root);
 	void create_tensor_msg(const std::vector<double> &prediction,std::string &doc);
 

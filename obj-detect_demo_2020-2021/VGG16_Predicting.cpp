@@ -1,15 +1,21 @@
 #include "VGG16_Predicting.h"
 
-void VGG16_Predicting::readAppendArray(std::vector<double>& des_, const Json::Value& root)
+void VGG16_Predicting::readAppendArray(double ***des_, const Json::Value &root)
 {
-	unsigned int count = root["data"].size() - 1;
-	for (unsigned int i = 0; i < count; i++)
-		des_.push_back(root["data"][i].asDouble());
+	// stationary length
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			for (int k = 0; k < 224; k++)
+				des_[i][j][k] = root["data"][i][j][k].asDouble();
+		}
+	}
 }
 
 void VGG16_Predicting::read_tensor_from_json(const Json::Value& root)
 {
-	VGG16_Predicting::readAppendArray(*this->pTensor, root);
+	VGG16_Predicting::readAppendArray(this->pTensorArray, root);
 }
 
 void VGG16_Predicting::create_tensor_msg(const std::vector<double> &prediction, std::string &doc)
@@ -21,7 +27,7 @@ void VGG16_Predicting::create_tensor_msg(const std::vector<double> &prediction, 
 	// set type
 	root["type"] = "tensor";
 	// set tensor
-	for (int i = 0; i < pTensor->size(); i++)
+	for (int i = 0; i < prediction.size(); i++)	// Fixed, Mar 14, 2021
 		data[i] = prediction.at(i);
 	// append to root
 	root["data"] = data;
@@ -36,7 +42,16 @@ VGG16_Predicting::VGG16_Predicting()
 {
 	pModule = nullptr;
 	fname = "";
-	pTensor = new std::vector<double>(TENSOR_SIZE);
+	//pTensor = new std::vector<double>(TENSOR_SIZE);
+	pTensorArray = new double**[3];
+	for (int i = 0; i < 3; i++)
+	{
+		pTensorArray[i] = new double*[2];
+		for (int j = 0; j < 224; j++)
+			pTensorArray[i][j] = new double[224];
+		// I'm not initializing it because it would not
+		// used before values are read into it
+	}
 	pPrediction = new std::vector<double>(N_CLASSES);
 }
 
@@ -44,14 +59,14 @@ VGG16_Predicting::VGG16_Predicting(const std::string &full_path)
 {
 	pModule = nullptr;
 	fname = full_path;
-	pTensor = new std::vector<double>(TENSOR_SIZE);
+	//pTensor = new std::vector<double>(TENSOR_SIZE);
 	pPrediction = new std::vector<double>(N_CLASSES);
 }
 
 VGG16_Predicting::~VGG16_Predicting()
 {
 	if (nullptr != pModule) delete pModule;
-	delete pTensor;
+	//delete pTensor;
 	delete pPrediction;
 }
 
@@ -87,7 +102,7 @@ std::vector<double> VGG16_Predicting::predict(const torch::jit::IValue& tensor)
 
 std::vector<double> VGG16_Predicting::predict(void)
 {
-	torch::Tensor tensor = torch::tensor(*pTensor);
+	torch::Tensor tensor = torch::tensor(this->pTensorArray);
 	std::vector<torch::jit::IValue> inputs;
     inputs.push_back(tensor);
 	at::Tensor output = pModule->forward(inputs).toTuple().get()->elements().back().toTensor();
