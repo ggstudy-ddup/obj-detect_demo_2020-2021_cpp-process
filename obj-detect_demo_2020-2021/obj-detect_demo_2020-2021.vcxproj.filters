@@ -18,12 +18,24 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="VGG16_Predicting.cpp">
+    <ClCompile Include="Communicator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DoubleArray.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PredictionModule.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VGG16_Predicting.h">
+    <ClInclude Include="Communicator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DoubleArray.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PredictionModule.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
